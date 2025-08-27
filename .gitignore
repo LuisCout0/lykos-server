@@ -34,3 +34,5 @@ build/
 
 # Lykos ignore
 scripts/
+*.yaml
+*.yml

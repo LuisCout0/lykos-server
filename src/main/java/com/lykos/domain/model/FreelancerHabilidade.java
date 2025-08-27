@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "freelancer_habilidade")
 public class FreelancerHabilidade {
+    
     @EmbeddedId
     private FreelancerHabilidadeId id;
     
@@ -21,10 +22,17 @@ public class FreelancerHabilidade {
     @MapsId("idHabilidade")
     @JoinColumn(name = "id_habilidade")
     private Habilidade habilidade;
-}
-
-@Embeddable
-class FreelancerHabilidadeId implements java.io.Serializable {
-    private Integer idFreelancer;
-    private Integer idHabilidade;
+    
+    // Construtor padrão para JPA
+    protected FreelancerHabilidade() {}
+    
+    // Construtor de domínio
+    public FreelancerHabilidade(Freelancer freelancer, Habilidade habilidade) {
+        this.freelancer = freelancer;
+        this.habilidade = habilidade;
+        
+        this.id = new FreelancerHabilidadeId();
+        this.id.setIdFreelancer(freelancer.getIdFreelancer().intValue());
+        this.id.setIdHabilidade(habilidade.getIdHabilidade());
+    }
 }

@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "freelancer_idioma")
 public class FreelancerIdioma {
+    
     @EmbeddedId
     private FreelancerIdiomaId id;
     
@@ -24,12 +25,20 @@ public class FreelancerIdioma {
     private Idioma idioma;
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "language_level")
+    @Column(nullable = false)
     private LanguageLevel nivelProficiencia;
-}
-
-@Embeddable
-class FreelancerIdiomaId implements java.io.Serializable {
-    private Integer idFreelancer;
-    private Integer idIdioma;
+    
+    // Construtor padrão para JPA
+    protected FreelancerIdioma() {}
+    
+    // Construtor de domínio
+    public FreelancerIdioma(Freelancer freelancer, Idioma idioma, LanguageLevel nivelProficiencia) {
+        this.freelancer = freelancer;
+        this.idioma = idioma;
+        this.nivelProficiencia = nivelProficiencia;
+        
+        this.id = new FreelancerIdiomaId();
+        this.id.setIdFreelancer(freelancer.getIdFreelancer().intValue());
+        this.id.setIdIdioma(idioma.getIdIdioma().intValue());
+    }
 }

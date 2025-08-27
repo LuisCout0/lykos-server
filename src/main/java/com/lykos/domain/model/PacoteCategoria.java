@@ -23,8 +23,3 @@ public class PacoteCategoria {
     private Subcategoria subcategoria;
 }
 
-@Embeddable
-class PacoteCategoriaId implements java.io.Serializable {
-    private Integer idPacote;
-    private Integer idSubcategoria;
-}

@@ -15,12 +15,51 @@ services:
     image: dpage/pgadmin4
     container_name: lykos_pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com # <- Muda pra um email real
+      PGADMIN_DEFAULT_EMAIL: luislk_@outlook.com # <- Muda pra um email real
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "8081:80"
     volumes:
       - ./scripts:/var/lib/pgadmin/scripts   # <- monta sua pasta local "scripts" no pgAdmin
 
+  minio:
+    image: minio/minio
+    container_name: lykos_minio
+    environment:
+      MINIO_ACCESS_KEY: lykos
+      MINIO_SECRET_KEY: lykos123
+    ports:
+      - "9000:9000" # API port
+      - "9001:9001" # Console
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - lykos-network
+
+  minio-client:
+    image: minio/mc
+    container_name: lykos_minio_client
+    environment:
+      MC_HOST_lykos: http://lykos:lykos123@minio:9000
+    entrypoint: >
+      /bin/sh -c "
+      until mc ready lykos; do echo 'Waiting for MinIO...'; sleep 2; done;
+      mc mb lykos/lykos-bucket || true;
+      mc anonymous set public lykos/lykos-bucket || true;
+      echo 'MinIO bucket created and set to public'; 
+      tail -f /dev/null
+      "
+    depends_on:
+      - minio
+    networks:
+      - lykos-network
+
 volumes:
   postgres_data:
+  minio_data:
+
+
+networks:
+  lykos-network:
+    driver: bridge

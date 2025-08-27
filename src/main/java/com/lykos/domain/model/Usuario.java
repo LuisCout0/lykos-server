@@ -132,7 +132,7 @@ public class Usuario {
     }
 
     // Método para verificar se usuário está inativo há muito tempo
-    public boolean isInativoPor(Long meses) {
+    public boolean isInativoPor(Integer meses) {
         if (ultimoLogin == null) {
             return dataCadastro.isBefore(LocalDateTime.now().minusMonths(meses));
         }

@@ -227,7 +227,7 @@ public class UsuarioService {
         return usuarioRepository.findByTipoUsuario(tipo);
     }
 
-    public List<Usuario> listarUsuariosInativosPorMeses(Long meses) {
+    public List<Usuario> listarUsuariosInativosPorMeses(Integer meses) {
         LocalDateTime dataLimite = LocalDateTime.now().minusMonths(meses);
         return usuarioRepository.findByStatusContaAndUltimoLoginBefore(
                 AccountStatus.ATIVO, dataLimite);
@@ -255,7 +255,7 @@ public class UsuarioService {
                 .orElse(false);
     }
 
-    public boolean isInativoPor(Integer userId, Long meses) {
+    public boolean isInativoPor(Integer userId, Integer meses) {
         return usuarioRepository.findById(userId)
                 .map(usuario -> usuario.isInativoPor(meses))
                 .orElse(false);
@@ -269,17 +269,14 @@ public class UsuarioService {
         return usuarioRepository.existsByNomeUsuario(nomeUsuario);
     }
 
-    // public long contarPorTipo(UserType tipo) {
+    // public Integer contarPorTipo(UserType tipo) {
     // return usuarioRepository.countByTipoUsuario(tipo);
     // }
 
-    public long contarPorStatus(AccountStatus status) {
+    public Integer contarPorStatus(AccountStatus status) {
         return usuarioRepository.countByStatusConta(status);
     }
 
-    public long contarTotalUsuarios() {
-        return usuarioRepository.count();
-    }
 
     // ========== MÉTODOS UTILITÁRIOS PRIVADOS ==========
 
@@ -307,7 +304,7 @@ public class UsuarioService {
         List<Usuario> usuarios = usuarioRepository.findByStatusConta(AccountStatus.ATIVO);
 
         usuarios.stream()
-                .filter(usuario -> usuario.isInativoPor((long) mesesInatividade))
+                .filter(usuario -> usuario.isInativoPor((Integer) mesesInatividade))
                 .forEach(Usuario::desativarConta);
     }
 
@@ -333,7 +330,7 @@ public class UsuarioService {
         List<Usuario> usuarios = usuarioRepository.findByStatusConta(AccountStatus.INATIVO);
 
         usuarios.stream()
-                .filter(usuario -> usuario.isInativoPor((long) mesesInatividade))
+                .filter(usuario -> usuario.isInativoPor((Integer) mesesInatividade))
                 .forEach(usuario -> usuarioRepository.delete(usuario));
     }
 }
